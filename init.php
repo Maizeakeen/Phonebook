@@ -189,29 +189,24 @@ function insertphone($dbh, $postdata)
     } catch (PDOException $e) {
         print $e->getMessage();
     }
+    $i = 0;
+    foreach ($postdata['phone'] as $out) {
+        $outdata[$i]['phone'] = $out;
+        $outdata[$i]['flagp'] = $postdata['flagp'][$i];
+        $i++;
+    }
 
-    foreach ($postdata['phone'] as $value) {
-        if ($value != '') {
-            $sql = "INSERT INTO phone(id,phone) VALUES (?,?)";
-            $outphone = $value;
+
+    foreach ($outdata as $key => $value) {
+        if ($value['phone'] != '') {
+            $sql = "INSERT INTO phone(id,phone,flag) VALUES (?,?,?)";
+            $outphone = $value['phone'];
+            $outflag = $value['flagp'];
             try {
                 $stmt = $dbh->prepare($sql);
                 $stmt->bindParam(1, $_SESSION['userid'], PDO::PARAM_INT);
                 $stmt->bindParam(2, $outphone, PDO::PARAM_STR);
-                $stmt->execute();
-            } catch (PDOException $e) {
-                print $e->getMessage();
-            }
-        }
-    }
-    if (!empty($postdata['flagp'])) {
-        foreach ($postdata['flagp'] as $key) {
-            $sql = "UPDATE phone SET flag=? WHERE id=?";
-            $outphone = $key;
-            try {
-                $stmt = $dbh->prepare($sql);
-                $stmt->bindParam(1, $outphone, PDO::PARAM_STR);
-                $stmt->bindParam(2, $_SESSION['userid'], PDO::PARAM_INT);
+                $stmt->bindParam(3, $outflag, PDO::PARAM_INT);
                 $stmt->execute();
             } catch (PDOException $e) {
                 print $e->getMessage();
@@ -234,29 +229,23 @@ function insertemail($dbh, $postdata)
     } catch (PDOException $e) {
         print $e->getMessage();
     }
+    $i = 0;
+    foreach ($postdata['email'] as $out) {
+        $outdata[$i]['email'] = $out;
+        $outdata[$i]['flage'] = $postdata['flage'][$i];
+        $i++;
+    }
 
-    foreach ($postdata['email'] as $value) {
-        if ($value != '') {
-            $sql = "INSERT INTO email(id,email) VALUES (?,?)";
-            $outemail = $value;
+    foreach ($outdata as $key => $value) {
+        if ($value['email'] != '') {
+            $sql = "INSERT INTO email(id,email,flag) VALUES (?,?,?)";
+            $outemail = $value['email'];
+            $outflag = $value['flage'];
             try {
                 $stmt = $dbh->prepare($sql);
                 $stmt->bindParam(1, $_SESSION['userid'], PDO::PARAM_INT);
                 $stmt->bindParam(2, $outemail, PDO::PARAM_STR);
-                $stmt->execute();
-            } catch (PDOException $e) {
-                print $e->getMessage();
-            }
-        }
-    }
-    if (!empty($postdata['flage'])) {
-        foreach ($postdata['flage'] as $key) {
-            $sql = "UPDATE email SET flag=? WHERE id=?";
-            $outemail = $key;
-            try {
-                $stmt = $dbh->prepare($sql);
-                $stmt->bindParam(1, $outemail, PDO::PARAM_STR);
-                $stmt->bindParam(2, $_SESSION['userid'], PDO::PARAM_INT);
+                $stmt->bindParam(3, $outflag, PDO::PARAM_INT);
                 $stmt->execute();
             } catch (PDOException $e) {
                 print $e->getMessage();

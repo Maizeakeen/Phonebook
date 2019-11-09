@@ -79,35 +79,37 @@
                     </thead>
                     <tbody id="phonetable">
                     <?php
+                    $k=0;
                     if (!empty($user->phone[0])) {                       //Поля ввода телефонов
                         foreach ($user->phone as $value) {
                             ?>
-                            <tr>
+                            <tr class="countp">
                             <td>
                                 <div class="inline field">
                                     <div class="ui toggle checkbox">
-                                        <input type="checkbox" name="flagp[]" value="1" tabindex="0" class="hidden"
+                                        <input type="checkbox" name="flagp[<?=$k?>]" value="1" tabindex="0" class="hidden"
                                             <?php if ($value['flag'] == 1) {
                                                 echo 'checked';
                                             } ?>>
                                         <label>Publish field</label>
                                     </div>
                                 </div>
-                                <input style="margin-top: 5px" type="text" name="phone[]"
+                                <input style="margin-top: 5px" type="text" name="phone[<?=$k?>]"
                                        value="<?php echo $value['phone']; ?>">
                             </td>
-                            </tr><?php }
+                            </tr><?php $k++;
+                        }
                     } else {
                         ?>
-                        <tr>
+                        <tr class="countp">
                             <td>
                                 <div class="inline field">
                                     <div class="ui toggle checkbox">
-                                        <input type="checkbox" name="flagp[]" value="1" tabindex="0" class="hidden">
+                                        <input type="checkbox" name="flagp[0]" value="1" tabindex="0" class="hidden">
                                         <label>Publish field</label>
                                     </div>
                                 </div>
-                                <input style="margin-top: 5px" type="text" name="phone[]">
+                                <input style="margin-top: 5px" type="text" name="phone[0]">
                             </td>
                         </tr>
                     <?php } ?>
@@ -125,35 +127,37 @@
                     </thead>
                     <tbody id="emailtable">
                     <?php
-                    if (!empty($user->email[0])) {           //Поля ввода почты
+                    $j=0;
+                    if (!empty($user->email[0])) {            //Поля ввода почты
                         foreach ($user->email as $value) {
                             ?>
-                            <tr>
+                            <tr class="counte">
                             <td>
                                 <div class="inline field">
                                     <div class="ui toggle checkbox">
-                                        <input type="checkbox" name="flage[]" value="1" tabindex="0" class="hidden"
+                                        <input type="checkbox" name="flage[<?=$j?>]" value="1" tabindex="0" class="hidden"
                                             <?php if ($value['flag'] == 1) {
                                                 echo 'checked';
                                             } ?>>
                                         <label>Publish field</label>
                                     </div>
                                 </div>
-                                <input style="margin-top: 5px" type="text" name="email[]"
+                                <input style="margin-top: 5px" type="text" name="email[<?=$j?>]"
                                        value="<?php echo $value['email']; ?>">
                             </td>
-                            </tr><?php }
+                            </tr><?php $j++;
+                        }
                     } else {
                         ?>
-                        <tr>
+                        <tr class="counte">
                             <td>
                                 <div class="inline field">
                                     <div class="ui toggle checkbox">
-                                        <input type="checkbox" name="flage[]" value="1" tabindex="0" class="hidden">
+                                        <input type="checkbox" name="flage[0]" value="1" tabindex="0" class="hidden">
                                         <label>Publish field</label>
                                     </div>
                                 </div>
-                                <input style="margin-top: 5px" type="text" name="email[]">
+                                <input style="margin-top: 5px" type="text" name="email[0]">
                             </td>
                         </tr>
                     <?php } ?>
