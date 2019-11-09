@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$user = 'root';
+$user = 'root';              //конект к БД
 $pass = '';
 try {
     $dbh = new PDO('mysql:host=localhost;dbname=countries;', $user, $pass);
@@ -9,7 +9,8 @@ try {
     echo $e->getMessage();
 }
 
-function showusers($dbh){
+function showusers($dbh)
+{
     $sql = "SELECT * FROM users";
     try {
         $stmt = $dbh->prepare($sql);
@@ -18,11 +19,11 @@ function showusers($dbh){
     } catch (PDOException $e) {
         print $e->getMessage();
     }
-
     return $data;
 }
 
-function showcountries($dbh){
+function showcountries($dbh)
+{
     $sql = "SELECT * FROM countries";
     try {
         $stmt = $dbh->prepare($sql);
@@ -31,11 +32,11 @@ function showcountries($dbh){
     } catch (PDOException $e) {
         print $e->getMessage();
     }
-
     return $data;
 }
 
-function showuserphone($dbh,$id){
+function showuserphone($dbh, $id)
+{
     $sql = "SELECT phone FROM phone WHERE id=? AND flag=1";
     try {
         $stmt = $dbh->prepare($sql);
@@ -45,11 +46,11 @@ function showuserphone($dbh,$id){
     } catch (PDOException $e) {
         print $e->getMessage();
     }
-
     return $data;
 }
 
-function showuseremail($dbh,$id){
+function showuseremail($dbh, $id)
+{
     $sql = "SELECT email FROM email WHERE id=? AND flag=1";
     try {
         $stmt = $dbh->prepare($sql);
@@ -62,9 +63,10 @@ function showuseremail($dbh,$id){
     return $data;
 }
 
-function login($dbh,$login,$password){
+function login($dbh, $login, $password)
+{
     $sql = "SELECT * FROM users WHERE login=? AND password=?";
-    $flag=false;
+    $flag = false;
     try {
         $stmt = $dbh->prepare($sql);
         $stmt->bindParam(1, $login, PDO::PARAM_STR);
@@ -74,16 +76,17 @@ function login($dbh,$login,$password){
     } catch (PDOException $e) {
         print $e->getMessage();
     }
-if(!empty($data)){
-    $_SESSION['userid']=$data[0]['id'];
-    $flag=true;
-}
+    if (!empty($data)) {
+        $_SESSION['userid'] = $data[0]['id'];
+        $flag = true;
+    }
     return $flag;
 }
 
-function getUser($dbh){
+function getUser($dbh)
+{
     require_once 'User.php';
-    if(empty($_SESSION['userid'])){
+    if (empty($_SESSION['userid'])) {
         return null;
     }
     require_once 'User.php';
@@ -96,21 +99,22 @@ function getUser($dbh){
     } catch (PDOException $e) {
         print $e->getMessage();
     }
-    $user=new User();
-    $user->login=$data[0]['login'];
-    $user->password=$data[0]['password'];
-    $user->name=$data[0]['name'];
-    $user->lastname=$data[0]['lastname'];
-    $user->id=$data[0]['id'];
-    $user->city=$data[0]['city'];
-    $user->street=$data[0]['street'];
-    $user->country=$data[0]['country'];
+    $user = new User();
+    $user->login = $data[0]['login'];
+    $user->password = $data[0]['password'];
+    $user->name = $data[0]['name'];
+    $user->lastname = $data[0]['lastname'];
+    $user->id = $data[0]['id'];
+    $user->city = $data[0]['city'];
+    $user->street = $data[0]['street'];
+    $user->country = $data[0]['country'];
     return $user;
 }
 
 
-function myphone($dbh){
-    if(empty($_SESSION['userid'])){
+function myphone($dbh)
+{
+    if (empty($_SESSION['userid'])) {
         return null;
     }
     $sql = "SELECT phone,flag FROM phone WHERE id=?";
@@ -123,17 +127,15 @@ function myphone($dbh){
         print $e->getMessage();
     }
 
-
-    foreach ($data as $key=>$value){
-        $output[]=$value;
+    foreach ($data as $key => $value) {
+        $output[] = $value;
     }
-
-
-return $output;
+    return $output;
 }
 
-function myemail($dbh){
-    if(empty($_SESSION['userid'])){
+function myemail($dbh)
+{
+    if (empty($_SESSION['userid'])) {
         return null;
     }
     $sql = "SELECT email,flag FROM email WHERE id=?";
@@ -146,31 +148,31 @@ function myemail($dbh){
         print $e->getMessage();
     }
 
-    foreach ($data as $key=>$value){
-        $output[]=$value;
+    foreach ($data as $key => $value) {
+        $output[] = $value;
     }
-
     return $output;
 }
 
-function updateuserdata($dbh,$postdata){
-    if(empty($_SESSION['userid'])){
+function updateuserdata($dbh, $postdata)
+{
+    if (empty($_SESSION['userid'])) {
         return null;
     }
-   $sql="UPDATE users SET name=?,lastname=?,street=?,city=?,country=? WHERE id=?";
-     try {
-         $stmt = $dbh->prepare($sql);
-         $stmt->bindParam(1, $postdata['name'], PDO::PARAM_STR);
-         $stmt->bindParam(2, $postdata['lastname'], PDO::PARAM_STR);
-         $stmt->bindParam(3, $postdata['street'], PDO::PARAM_STR);
-         $stmt->bindParam(4, $postdata['city'], PDO::PARAM_STR);
-         $stmt->bindParam(5, $postdata['country'], PDO::PARAM_STR);
-         $stmt->bindParam(6, $_SESSION['userid'], PDO::PARAM_INT);
-         $stmt->execute();
-     } catch (PDOException $e) {
-         print $e->getMessage();
-     }
-     return;
+    $sql = "UPDATE users SET name=?,lastname=?,street=?,city=?,country=? WHERE id=?";
+    try {
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(1, $postdata['name'], PDO::PARAM_STR);
+        $stmt->bindParam(2, $postdata['lastname'], PDO::PARAM_STR);
+        $stmt->bindParam(3, $postdata['street'], PDO::PARAM_STR);
+        $stmt->bindParam(4, $postdata['city'], PDO::PARAM_STR);
+        $stmt->bindParam(5, $postdata['country'], PDO::PARAM_STR);
+        $stmt->bindParam(6, $_SESSION['userid'], PDO::PARAM_INT);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        print $e->getMessage();
+    }
+    return;
 }
 
 

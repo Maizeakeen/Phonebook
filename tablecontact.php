@@ -30,7 +30,8 @@
                             <div class="ui label">
                                 Last name
                             </div>
-                            <input style="margin-top: 4px" type="text" name="lastname" value="<?php echo $user->lastname; ?>">
+                            <input style="margin-top: 4px" type="text" name="lastname"
+                                   value="<?php echo $user->lastname; ?>">
                         </td>
                     </tr>
                     <tr>
@@ -38,7 +39,8 @@
                             <div class="ui label">
                                 Street
                             </div>
-                            <input style="margin-top: 4px" type="text" name="street" value="<?php echo $user->street; ?>">
+                            <input style="margin-top: 4px" type="text" name="street"
+                                   value="<?php echo $user->street; ?>">
                         </td>
                     </tr>
                     <tr>
@@ -54,14 +56,14 @@
                             <div class="ui label">
                                 Country
                             </div>
-                            <select  style="margin-top: 4px" type="text" name="country">
-                            <?php $countries=showcountries($dbh);
-                            foreach ($countries as $key => $country) { ?>
-                                <option value="<?php echo $country['name'] ?>"
-                                    <? if($country['name']  == $user->country) {
-                                    echo 'selected';
-                                } ?>><?php echo  $country['name'];?></option>
-                            <?php } ?>
+                            <select style="margin-top: 4px" type="text" name="country">
+                                <?php $countries = showcountries($dbh);
+                                foreach ($countries as $key => $country) { ?>
+                                    <option value="<?php echo $country['name'] ?>"
+                                        <? if ($country['name'] == $user->country) {
+                                            echo 'selected';
+                                        } ?>><?php echo $country['name']; ?></option>
+                                <?php } ?>
                             </select>
                         </td>
                     </tr>
@@ -77,22 +79,38 @@
                     </thead>
                     <tbody id="phonetable">
                     <?php
-                    foreach ($user->phone as $value) {
+                    if (!empty($user->phone[0])) {                       //Поля ввода телефонов
+                        foreach ($user->phone as $value) {
+                            ?>
+                            <tr>
+                            <td>
+                                <div class="inline field">
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" name="flagp[]" value="1" tabindex="0" class="hidden"
+                                            <?php if ($value['flag'] == 1) {
+                                                echo 'checked';
+                                            } ?>>
+                                        <label>Publish field</label>
+                                    </div>
+                                </div>
+                                <input style="margin-top: 5px" type="text" name="phone[]"
+                                       value="<?php echo $value['phone']; ?>">
+                            </td>
+                            </tr><?php }
+                    } else {
                         ?>
                         <tr>
-                        <td>
-                            <div class="inline field">
-                                <div class="ui toggle checkbox">
-                                    <input type="checkbox" name="flagp[]" value="1" tabindex="0" class="hidden"
-                                        <?php if ($value['flag'] == 1) {
-                                        echo 'checked';} ?>>
-
-                                    <label>Publish field</label>
+                            <td>
+                                <div class="inline field">
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" name="flagp[]" value="1" tabindex="0" class="hidden">
+                                        <label>Publish field</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <input style="margin-top: 5px" type="text" name="phone[]" value="<?php echo $value['phone']; ?>">
-                        </td>
-                        </tr><?php } ?>
+                                <input style="margin-top: 5px" type="text" name="phone[]">
+                            </td>
+                        </tr>
+                    <?php } ?>
                     </tbody>
                 </table>
                 <a id="addp">+Add</a>
@@ -106,23 +124,39 @@
                     </tr>
                     </thead>
                     <tbody id="emailtable">
-
                     <?php
-                    foreach ($user->email as $value) {
+                    if (!empty($user->email[0])) {           //Поля ввода почты
+                        foreach ($user->email as $value) {
+                            ?>
+                            <tr>
+                            <td>
+                                <div class="inline field">
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" name="flage[]" value="1" tabindex="0" class="hidden"
+                                            <?php if ($value['flag'] == 1) {
+                                                echo 'checked';
+                                            } ?>>
+                                        <label>Publish field</label>
+                                    </div>
+                                </div>
+                                <input style="margin-top: 5px" type="text" name="email[]"
+                                       value="<?php echo $value['email']; ?>">
+                            </td>
+                            </tr><?php }
+                    } else {
                         ?>
                         <tr>
-                        <td>
-                            <div class="inline field">
-                                <div class="ui toggle checkbox">
-                                    <input type="checkbox" name="flage[]" value="1" tabindex="0" class="hidden"
-                                        <?php if ($value['flag'] == 1) {
-                                        echo 'checked';} ?>>
-                                    <label>Publish field</label>
+                            <td>
+                                <div class="inline field">
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" name="flage[]" value="1" tabindex="0" class="hidden">
+                                        <label>Publish field</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <input style="margin-top: 5px" type="text" name="email[]" value="<?php echo $value['email']; ?>">
-                        </td>
-                        </tr><?php } ?>
+                                <input style="margin-top: 5px" type="text" name="email[]">
+                            </td>
+                        </tr>
+                    <?php } ?>
                     </tbody>
                 </table>
                 <a id="adde">+Add</a>
@@ -131,5 +165,5 @@
         </tbody>
     </table>
     <br>
-<button class="ui inverted red button">Save</button>
+    <button class="ui inverted red button">Save</button>
 </form>
