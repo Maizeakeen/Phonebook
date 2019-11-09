@@ -18,73 +18,63 @@ if ($flag==false) {
                               Неправельный логин или пароль.
                          </div>
               </div>';
-}else{
-    $user=getUser($dbh);
 }
+
+if(!empty($_POST['name'])){
+    updateuserdata($dbh,$_POST);
+    insertphone($dbh,$_POST);
+    insertemail($dbh,$_POST);
+}
+
+if(!empty($_SESSION['userid']))
+{
+    $user=getUser($dbh);
+    $user->phone=myphone($dbh);
+    $user->email=myemail($dbh);
+}
+
+
 ?>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="stylep.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body class="ui inverted segment">
     <header>
         <div class="logo"><a href="phonebook.php">Phonebook</a></div>
-        <div><a class="right" href="logout.php">Logout</a></div>
+        <?php if(!empty($_SESSION['userid'])){?>
+        <div class="rightbutton"><a class="ui secondary button" href="logout.php">
+                Logout
+            </a></div>
+        <?php }?>
     </header>
     <br>
     <br>
     <br>
 <div class="inner">
     <div class="ui inverted pointing menu">
-        <a class="item" id="clickmain">
-            Public phonebook
-        </a>
-        <a class="item" id="clicklogin">
-            Login
-        </a>
+        <?php include 'menu.php';?>
     </div>
 
     <div class="ui segment">
         <div id="mainmenu">
-            <div class="ui relaxed divided list">
-                <?php
-                $data = showusers($dbh);
-                foreach ($data as $key => $value) {
-                    $output .=
-                        '<div class="item">
-                            <div class="content">
-                               <p>' . $value["name"] . ' ' . $value["lastname"] . '<a class="right">show</a></p>
-                            </div>
-                         </div>';}
-                echo $output; ?>
-            </div>
+        <?php include 'mainmenu.php';?>
         </div>
 
         <div id="login" hidden="true">
-            <form class="ui form" method="post" action="phonebook.php">
-                <div class="field">
-                    <label>Username</label>
-                    <input type="text" name="login">
-                </div>
-                <div class="field">
-                    <label>Password</label>
-                    <input type="text" name="password">
-                </div>
-                <button class="ui inverted yellow button" type="submit" id="buttonlogin">Login</button>
-            </form>
-
-
-            <div hidden="<?php echo $flag;?>">
-                <?php echo $error; ?>
-            </div>
+            <?php include 'login.php'; ?>
         </div>
+
+
+        <div id="contact" hidden="true">
+           <?php include 'tablecontact.php';?>
+        </div>
+
     </div>
-
 </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -95,7 +85,60 @@ if ($flag==false) {
             $("#clickmain").click(function () {
                 $("#mainmenu").show(400);
                 $("#login").hide();
+                $("#contact").hide();
             });
+            $("#clickcontact").click(function () {
+                $("#contact").show(400);
+                $("#mainmenu").hide();
+            });
+
+                $(".show").click(function () {
+                    $("#userdata").show(400);
+                    $(".show").hide();
+                    $(".hide").show(400);
+                });
+                $(".hide").click(function () {
+                    $("#userdata").hide(400);
+                    $(".show").show(400);
+                    $(".hide").hide();
+                });
+
+            $("#addp").click(function () {
+                $("#phonetable").append(
+                    '<tr>'
+                    +'<td>'
+                    +'<div class="inline field">'
+                    +'<div class="ui toggle checkbox">'
+                    +'<input type="checkbox" name="flagp[]" tabindex="0" class="hidden">'
+                    +'<label>Publish field</label>'
+                    +'</div>'
+                    +'</div>'
+                    +'<input style="margin-top: 5px" name="phone[]" type="text">'
+                    +'</td>'
+                    +'</tr>'
+                )
+            });
+
+            $("#adde").click(function () {
+                $("#emailtable").append(
+                    '<tr>'
+                    +'<td>'
+                    +'<div class="inline field">'
+                    +'<div class="ui toggle checkbox">'
+                    +'<input type="checkbox"  name="flage[]" tabindex="0" class="hidden">'
+                    +'<label>Publish field</label>'
+                    +'</div>'
+                    +'</div>'
+                    +'<input style="margin-top: 5px" name="email[]"  type="text">'
+                    +'</td>'
+                    +'</tr>'
+                )
+            });
+
+
+            $('.ui.checkbox')
+                .checkbox()
+            ;
         })
     </script>
 </body>

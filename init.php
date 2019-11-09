@@ -10,9 +10,50 @@ try {
 }
 
 function showusers($dbh){
-    $sql = "SELECT * FROM users ";
+    $sql = "SELECT * FROM users";
     try {
         $stmt = $dbh->prepare($sql);
+        $stmt->execute();
+        $data = $stmt->fetchALL();
+    } catch (PDOException $e) {
+        print $e->getMessage();
+    }
+
+    return $data;
+}
+
+function showcountries($dbh){
+    $sql = "SELECT * FROM countries";
+    try {
+        $stmt = $dbh->prepare($sql);
+        $stmt->execute();
+        $data = $stmt->fetchALL();
+    } catch (PDOException $e) {
+        print $e->getMessage();
+    }
+
+    return $data;
+}
+
+function showuserphone($dbh,$id){
+    $sql = "SELECT phone FROM phone WHERE id=? AND flag=1";
+    try {
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetchALL();
+    } catch (PDOException $e) {
+        print $e->getMessage();
+    }
+
+    return $data;
+}
+
+function showuseremail($dbh,$id){
+    $sql = "SELECT email FROM email WHERE id=? AND flag=1";
+    try {
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
         $stmt->execute();
         $data = $stmt->fetchALL();
     } catch (PDOException $e) {
@@ -37,13 +78,15 @@ if(!empty($data)){
     $_SESSION['userid']=$data[0]['id'];
     $flag=true;
 }
-
     return $flag;
 }
 
 function getUser($dbh){
     require_once 'User.php';
-if(!empty($_SESSION['userid'])){
+    if(empty($_SESSION['userid'])){
+        return null;
+    }
+    require_once 'User.php';
     $sql = "SELECT * FROM users WHERE id=?";
     try {
         $stmt = $dbh->prepare($sql);
@@ -53,7 +96,6 @@ if(!empty($_SESSION['userid'])){
     } catch (PDOException $e) {
         print $e->getMessage();
     }
-
     $user=new User();
     $user->login=$data[0]['login'];
     $user->password=$data[0]['password'];
@@ -63,10 +105,162 @@ if(!empty($_SESSION['userid'])){
     $user->city=$data[0]['city'];
     $user->street=$data[0]['street'];
     $user->country=$data[0]['country'];
-}else{
-    return null;
+    return $user;
 }
 
 
-return $user;
+function myphone($dbh){
+    if(empty($_SESSION['userid'])){
+        return null;
+    }
+    $sql = "SELECT phone,flag FROM phone WHERE id=?";
+    try {
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(1, $_SESSION['userid'], PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetchALL();
+    } catch (PDOException $e) {
+        print $e->getMessage();
+    }
+
+
+    foreach ($data as $key=>$value){
+        $output[]=$value;
+    }
+
+
+return $output;
 }
+
+function myemail($dbh){
+    if(empty($_SESSION['userid'])){
+        return null;
+    }
+    $sql = "SELECT email,flag FROM email WHERE id=?";
+    try {
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(1, $_SESSION['userid'], PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetchALL();
+    } catch (PDOException $e) {
+        print $e->getMessage();
+    }
+
+    foreach ($data as $key=>$value){
+        $output[]=$value;
+    }
+
+    return $output;
+}
+
+function updateuserdata($dbh,$postdata){
+    if(empty($_SESSION['userid'])){
+        return null;
+    }
+   $sql="UPDATE users SET name=?,lastname=?,street=?,city=?,country=? WHERE id=?";
+     try {
+         $stmt = $dbh->prepare($sql);
+         $stmt->bindParam(1, $postdata['name'], PDO::PARAM_STR);
+         $stmt->bindParam(2, $postdata['lastname'], PDO::PARAM_STR);
+         $stmt->bindParam(3, $postdata['street'], PDO::PARAM_STR);
+         $stmt->bindParam(4, $postdata['city'], PDO::PARAM_STR);
+         $stmt->bindParam(5, $postdata['country'], PDO::PARAM_STR);
+         $stmt->bindParam(6, $_SESSION['userid'], PDO::PARAM_INT);
+         $stmt->execute();
+     } catch (PDOException $e) {
+         print $e->getMessage();
+     }
+     return;
+}
+
+
+function insertphone($dbh, $postdata)
+{
+    if (empty($_SESSION['userid'])) {
+        return null;
+    }
+    $dsql = "DELETE FROM phone WHERE id=?";
+    try {
+        $stmt = $dbh->prepare($dsql);
+        $stmt->bindParam(1, $_SESSION['userid'], PDO::PARAM_INT);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        print $e->getMessage();
+    }
+
+    foreach ($postdata['phone'] as $value) {
+        if ($value != '') {
+            $sql = "INSERT INTO phone(id,phone) VALUES (?,?)";
+            $outphone = $value;
+            try {
+                $stmt = $dbh->prepare($sql);
+                $stmt->bindParam(1, $_SESSION['userid'], PDO::PARAM_INT);
+                $stmt->bindParam(2, $outphone, PDO::PARAM_STR);
+                $stmt->execute();
+            } catch (PDOException $e) {
+                print $e->getMessage();
+            }
+        }
+    }
+    if (!empty($postdata['flagp'])) {
+        foreach ($postdata['flagp'] as $key) {
+            $sql = "UPDATE phone SET flag=? WHERE id=?";
+            $outphone = $key;
+            try {
+                $stmt = $dbh->prepare($sql);
+                $stmt->bindParam(1, $outphone, PDO::PARAM_STR);
+                $stmt->bindParam(2, $_SESSION['userid'], PDO::PARAM_INT);
+                $stmt->execute();
+            } catch (PDOException $e) {
+                print $e->getMessage();
+            }
+        }
+    }
+    return;
+}
+
+function insertemail($dbh, $postdata)
+{
+    if (empty($_SESSION['userid'])) {
+        return null;
+    }
+    $dsql = "DELETE FROM email WHERE id=?";
+    try {
+        $stmt = $dbh->prepare($dsql);
+        $stmt->bindParam(1, $_SESSION['userid'], PDO::PARAM_INT);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        print $e->getMessage();
+    }
+
+    foreach ($postdata['email'] as $value) {
+        if ($value != '') {
+            $sql = "INSERT INTO email(id,email) VALUES (?,?)";
+            $outemail = $value;
+            try {
+                $stmt = $dbh->prepare($sql);
+                $stmt->bindParam(1, $_SESSION['userid'], PDO::PARAM_INT);
+                $stmt->bindParam(2, $outemail, PDO::PARAM_STR);
+                $stmt->execute();
+            } catch (PDOException $e) {
+                print $e->getMessage();
+            }
+        }
+    }
+    if (!empty($postdata['flage'])) {
+        foreach ($postdata['flage'] as $key) {
+            $sql = "UPDATE email SET flag=? WHERE id=?";
+            $outemail = $key;
+            try {
+                $stmt = $dbh->prepare($sql);
+                $stmt->bindParam(1, $outemail, PDO::PARAM_STR);
+                $stmt->bindParam(2, $_SESSION['userid'], PDO::PARAM_INT);
+                $stmt->execute();
+            } catch (PDOException $e) {
+                print $e->getMessage();
+            }
+        }
+    }
+    return;
+}
+

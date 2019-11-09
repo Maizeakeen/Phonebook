@@ -11,6 +11,8 @@ class User
     private $country;
     private $street;
     private $id;
+    private $phone;
+    private $email;
 
     public function __get($property)
     {
@@ -27,7 +29,7 @@ class User
             case 'lastname':
                 return    $this->lastname;
                 break;
-            case '$city':
+            case 'city':
                 return    $this->city;
                 break;
             case 'country':
@@ -38,6 +40,12 @@ class User
                 break;
             case 'id':
                 return   $this->id;
+                break;
+            case 'phone':
+                return   $this->phone;
+                break;
+            case 'email':
+                return   $this->email;
                 break;
         }
     }
@@ -69,6 +77,13 @@ class User
             case 'id':
                 $this->id = $value;
                 break;
+            case 'phone':
+                $this->phone=$value;
+                break;
+            case 'email':
+                $this->email=$value;
+                break;
         }
     }
 }
+
