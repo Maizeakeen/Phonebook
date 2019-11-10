@@ -83,6 +83,51 @@ function login($dbh, $login, $password)
     return $flag;
 }
 
+function registr($dbh, $login, $password)
+{
+    $sql = "SELECT * FROM users WHERE login=?";
+    try {
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(1, $login, PDO::PARAM_STR);
+        $stmt->execute();
+        $data = $stmt->fetchALL();
+    } catch (PDOException $e) {
+        print $e->getMessage();
+    }
+
+    if (!empty($data)) {
+        return;
+    } else {
+        $sql = "INSERT INTO users(id,login,password,name,lastname,city,country,street) VALUES (NULL, ?,?, '', '', '', '', '');";
+        $flag = false;
+        try {
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindParam(1, $login, PDO::PARAM_STR);
+            $stmt->bindParam(2, $password, PDO::PARAM_STR);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            print $e->getMessage();
+        }
+        $sql = "SELECT * FROM users WHERE login=? AND password=?";
+        try {
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindParam(1, $login, PDO::PARAM_STR);
+            $stmt->bindParam(2, $password, PDO::PARAM_STR);
+            $stmt->execute();
+            $data = $stmt->fetchALL();
+        } catch (PDOException $e) {
+            print $e->getMessage();
+        }
+        var_dump($data);
+        if (!empty($data)) {
+            $_SESSION['userid'] = $data[0]['id'];
+            $flag = true;
+        }
+    }
+    return $flag;
+}
+
+
 function getUser($dbh)
 {
     require_once 'User.php';

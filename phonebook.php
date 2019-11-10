@@ -3,6 +3,9 @@ include 'init.php';
 if (isset($_POST['login']) && isset($_POST['password'])) {          //Проверка введёных данных и вход
     $flag = login($dbh, $_POST['login'], $_POST['password']);
 }
+if (isset($_POST['rlogin']) && isset($_POST['rpassword'])) {          //Проверка введёных данных и регистрация
+    $flag = registr($dbh, $_POST['rlogin'], $_POST['rpassword']);
+}
 if (!empty($_POST['name'])) {             //Изменения данных пользователя
     updateuserdata($dbh, $_POST);
     insertphone($dbh, $_POST);
@@ -56,24 +59,38 @@ if (!empty($_SESSION['userid'])) {    //Получение данных зало
             <?php include 'tablecontact.php'; ?>
         </div>
 
+        <div id="registr" hidden="true">
+            <!--Страница с данными залогиненого пользователя-->
+            <?php include 'registr.php'; ?>
+        </div>
+
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
 <script>
     $(document).ready(function () {
         $("#clicklogin").click(function () {  //Переключение между пунктами меню
-        $("#login").show(400);
-        $("#mainmenu").hide();
-    });
-    $("#clickmain").click(function () {
-        $("#mainmenu").show(400);
-        $("#login").hide();
-        $("#contact").hide();
-    });
-    $("#clickcontact").click(function () {
-        $("#contact").show(400);
-        $("#mainmenu").hide();
-    });
+            $("#login").show(400);
+            $("#mainmenu").hide();
+            $("#registr").hide();
+        });
+        $("#clickmain").click(function () {
+            $("#mainmenu").show(400);
+            $("#login").hide();
+            $("#contact").hide();
+            $("#registr").hide();
+        });
+        $("#clickcontact").click(function () {
+            $("#contact").show(400);
+            $("#mainmenu").hide();
+        });
+        $("#clickregistr").click(function () {  //Переключение между пунктами меню
+            $("#registr").show(400);
+            $("#mainmenu").hide();
+            $("#login").hide();
+        });
+
+
     $('.item').each(function (index) {  // Всплывающие окна с расшириными данными пользователей
         $(".show" + index).click(function () {
             $("#userdata" + index).show(400);

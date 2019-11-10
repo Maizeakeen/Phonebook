@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 09 2019 г., 17:13
+-- Время создания: Ноя 10 2019 г., 14:08
 -- Версия сервера: 8.0.15
 -- Версия PHP: 7.3.2
 
@@ -121,7 +121,8 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `login`, `password`, `name`, `lastname`, `city`, `country`, `street`) VALUES
 (1, 'john', '12345', 'Victor', 'Smith', 'Dnepr', 'Ukrain', '123, sreet'),
 (2, 'james', '54321', 'Sasha', 'Bald', 'New York', 'America', '123, sreet'),
-(3, 'rick', 'password', 'Rick', 'Astley', 'London', 'England', '123, sreet');
+(3, 'rick', 'password', 'Rick', 'Astley', 'London', 'England', '123, sreet'),
+(5, 'user', 'user', '', '', '', '', '');
 
 --
 -- Индексы сохранённых таблиц
@@ -144,6 +145,16 @@ ALTER TABLE `phone`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`) USING BTREE;
+
+--
+-- AUTO_INCREMENT для сохранённых таблиц
+--
+
+--
+-- AUTO_INCREMENT для таблицы `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц

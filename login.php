@@ -12,6 +12,3 @@
         <button class="ui inverted yellow button" type="submit" id="buttonlogin">Login</button>
     </div>
 </form>
-<div hidden="<?php echo $flag; ?>">
-    <?php echo $error; ?>
-</div>
